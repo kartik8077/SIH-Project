@@ -1,0 +1,131 @@
+/* SAHAY-V Custom CSS & Aesthetic Token System */
+
+:root {
+  --primary-purple: #6B4FBB;
+  --primary-pink: #E0407B;
+  --bg-lavender: #FAF9FC;
+  --text-slate: #2D2A3E;
+  --success-green: #6FCF97;
+  --warning-orange: #E07856;
+  --gradient-main: linear-gradient(135deg, #6B4FBB 0%, #E0407B 100%);
+  --gradient-soft: linear-gradient(135deg, rgba(107, 79, 187, 0.08) 0%, rgba(224, 64, 123, 0.08) 100%);
+}
+
+body {
+  background-color: var(--bg-lavender);
+  color: var(--text-slate);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Outfit', 'Quicksand', sans-serif;
+}
+
+/* Custom Gradient Utilities */
+.bg-gradient-sahay {
+  background: var(--gradient-main);
+}
+
+.text-gradient-sahay {
+  background: var(--gradient-main);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gradient-sahay {
+  border-image: var(--gradient-main) 1;
+}
+
+/* Glassmorphism Cards & Panels */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(107, 79, 187, 0.1);
+  box-shadow: 0 10px 30px -5px rgba(107, 79, 187, 0.05);
+}
+
+.glass-nav {
+  background: rgba(250, 249, 252, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(107, 79, 187, 0.08);
+}
+
+/* Soft Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.animate-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Breathing Circle Animation */
+@keyframes breatheCycle {
+  0% { transform: scale(1); opacity: 0.7; }
+  35% { transform: scale(1.45); opacity: 1; }
+  65% { transform: scale(1.45); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.7; }
+}
+
+.breathe-circle-active {
+  animation: breatheCycle 12s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF9FC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8CEF0;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6B4FBB;
+}
+
+/* Mood Range Slider Custom Styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #6FCF97 0%, #F2C94C 50%, #E07856 100%);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 3px solid #6B4FBB;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(107, 79, 187, 0.3);
+  transition: transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}

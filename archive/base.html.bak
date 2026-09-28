@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SAHAY-V — You Are Not Alone{% endblock %}</title>
+    <meta name="description" content="SAHAY-V is a calming, professional anxiety and stress-support companion app offering AI emotional assessments, mood tracking, and grounding exercises.">
+    <meta name="theme-color" content="#6B4FBB">
+
+    <!-- Google Fonts: Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sahayPurple: '#6B4FBB',
+                        sahayPink: '#E0407B',
+                        sahayBg: '#FAF9FC',
+                        sahayText: '#2D2A3E',
+                        sahayGreen: '#6FCF97',
+                        sahayWarning: '#E07856'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-purple-200">
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 glass-nav">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo & Title -->
+            <a href="{{ url_for('main.index') }}" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-2xl bg-white p-1.5 shadow-sm border border-purple-100 group-hover:scale-105 transition-transform">
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="SAHAY-V Logo" class="w-full h-full object-contain">
+                </div>
+                <div>
+                    <div class="font-heading text-xl font-bold tracking-tight text-gradient-sahay">SAHAY-V</div>
+                    <div class="text-[11px] text-slate-500 font-medium tracking-wide">You Are Not Alone</div>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="flex items-center gap-2 sm:gap-4">
+                <a href="{{ url_for('chat.chat_page') }}" 
+                   class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 {% if request.endpoint == 'chat.chat_page' %} bg-gradient-sahay text-white shadow-md {% else %} text-slate-700 hover:bg-purple-50 {% endif %}">
+                    <span>💬</span> <span class="hidden sm:inline">Start Chatting</span>
+                </a>
+
+                <a href="{{ url_for('journey.journey_page') }}" 
+                   class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 {% if request.endpoint == 'journey.journey_page' %} bg-gradient-sahay text-white shadow-md {% else %} text-slate-700 hover:bg-purple-50 {% endif %}">
+                    <span>🧭</span> <span class="hidden sm:inline">My Journey</span>
+                </a>
+
+                <a href="{{ url_for('safety.safety_page') }}" 
+                   class="px-3.5 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 {% if request.endpoint == 'safety.safety_page' %} bg-sahayWarning text-white shadow-md {% else %} text-slate-700 hover:bg-orange-50 {% endif %}">
+                    <span>🛡️</span> <span class="hidden sm:inline">Safety</span>
+                </a>
+            </nav>
+
+        </div>
+    </header>
+
+    <!-- Main Page Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-purple-100 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500 leading-relaxed">
+            <p class="mb-2">
+                <strong>Disclaimer:</strong> SAHAY-V is an AI-powered emotional support companion and self-reflection journal. 
+                It is not a substitute for professional mental healthcare, psychiatric diagnosis, or emergency treatment.
+            </p>
+            <p>
+                If you are experiencing acute crisis or self-harm thoughts, please reach out immediately to 
+                <a href="{{ url_for('safety.safety_page') }}" class="text-sahayWarning font-semibold hover:underline">Safety & Crisis Resources 🆘</a>.
+            </p>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

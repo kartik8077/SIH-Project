@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}SAHAY-V — You Are Not Alone{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden py-12 md:py-20">
+    
+    <!-- Soothing Animated Background Glows -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/40 to-pink-200/40 rounded-full blur-3xl pointer-events-none animate-glow"></div>
+    <div class="absolute top-1/2 -right-40 w-96 h-96 bg-purple-100/50 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+
+        <!-- Centered Logo & Branding -->
+        <div class="inline-block p-4 rounded-3xl bg-white/90 shadow-xl border border-purple-100 mb-6 animate-float">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="SAHAY-V Emblem" class="w-32 h-32 md:w-40 md:h-40 mx-auto">
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold font-heading text-slate-800 tracking-tight mb-4">
+            Welcome to <span class="text-gradient-sahay">SAHAY-V</span>
+        </h1>
+        
+        <p class="text-xl sm:text-2xl font-heading text-purple-900/80 font-medium mb-3">
+            "You Are Not Alone" 🤍
+        </p>
+
+        <p class="max-w-2xl mx-auto text-slate-600 text-base sm:text-lg leading-relaxed mb-12">
+            A gentle, confidential companion for anxiety assessment, emotional expression, and daily inner growth. 
+            Take a deep breath — we are here with you every step of the way.
+        </p>
+
+        <!-- 3 Primary Feature Action Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto text-left">
+            
+            <!-- Card 1: Start Chatting -->
+            <a href="{{ url_for('chat.chat_page') }}" 
+               class="glass-card p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 group border border-purple-100 hover:border-purple-300 hover:shadow-xl">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">💬</div>
+                <h2 class="text-xl font-bold font-heading text-slate-800 mb-2 group-hover:text-sahayPurple transition-colors">
+                    Start Chatting
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Talk freely with our empathetic AI assessment companion in a safe, non-judgmental space.
+                </p>
+                <div class="text-sahayPurple text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    Begin Conversation &rarr;
+                </div>
+            </a>
+
+            <!-- Card 2: Explore My Journey -->
+            <a href="{{ url_for('journey.journey_page') }}" 
+               class="glass-card p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 group border border-purple-100 hover:border-pink-300 hover:shadow-xl">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🧭</div>
+                <h2 class="text-xl font-bold font-heading text-slate-800 mb-2 group-hover:text-sahayPink transition-colors">
+                    Explore My Journey
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Visualize your anxiety levels over time with interactive graphs and reflective journal entries.
+                </p>
+                <div class="text-sahayPink text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    View Dashboard &rarr;
+                </div>
+            </a>
+
+            <!-- Card 3: Safety & Resources -->
+            <a href="{{ url_for('safety.safety_page') }}" 
+               class="glass-card p-6 rounded-2xl hover:-translate-y-1.5 transition-all duration-300 group border border-orange-100 hover:border-orange-300 hover:shadow-xl">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                <h2 class="text-xl font-bold font-heading text-slate-800 mb-2 group-hover:text-sahayWarning transition-colors">
+                    Safety & Help
+                </h2>
+                <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                    Access immediate grounding exercises, breathing guides, and 24/7 crisis helpline contacts.
+                </p>
+                <div class="text-sahayWarning text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    Explore Safety Tools &rarr;
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Quick Reassurance Banner -->
+        <div class="mt-14 max-w-xl mx-auto p-4 rounded-2xl bg-white/70 border border-purple-100/60 shadow-sm flex items-center justify-center gap-3 text-sm text-slate-600">
+            <span class="text-xl">🌸</span>
+            <span>Your peace of mind matters. Everything here is designed to support your calm.</span>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
