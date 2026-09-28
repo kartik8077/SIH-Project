@@ -1,65 +1,87 @@
 # SAHAY-V — AI-Powered Mental Health & Emotional Companion
 
-> Smart India Hackathon Project: "You Are Not Alone" 🤍
+> **Smart India Hackathon Project — "You Are Not Alone" 🤍**
 
-SAHAY-V is a calming, confidential mental health companion designed to assist individuals navigating stress, anxiety, and emotional overwhelm. It provides an AI assessment conversation companion (powered by an n8n workflow), automated and manual mood journal tracking with visual time-series analytics, and interactive grounding exercises.
+SAHAY-V is an AI-powered emotional support and mental wellness companion designed to help individuals navigate stress, anxiety, and emotional overwhelm.
 
----
+The platform combines a Flask-based web application with a locally hosted **n8n AI workflow** to provide conversational support, emotional assessment, mood tracking, journaling, and interactive grounding exercises.
 
-## Key Features
-
-1. **AI Chat Companion (`/chat`)**:
-   - Confidential conversation partner connected to an n8n AI Assessment Agent.
-   - Automatically assesses vulnerability/anxiety levels (1–10) and logs to the Journey record.
-   - Gracefully handles offline AI services with calming, supportive fallbacks.
-
-2. **My Journey Dashboard (`/journey`)**:
-   - Tracks mood trends with aggregated summary averages (Today, Week, Month).
-   - Interactive Chart.js time-series graph with range filtering (`Day`, `Week`, `Month`).
-   - Chronological mood timeline with custom reflection notes and source tracking.
-   - Live 1–10 anxiety slider with animated emoji reactions.
-
-3. **Safety & Crisis Resources (`/safety`)**:
-   - One-tap access to national mental health helplines (Tele-MANAS, KIRAN, Vandrevala Foundation).
-   - Interactive 4-4-4 Box Breathing visualizer with real-time breathing circle animation.
-   - Interactive 5-4-3-2-1 Sensory Grounding exercise with progress tracking.
+> **Important:** SAHAY-V is designed as a supportive companion and is not a replacement for professional medical or mental-health care.
 
 ---
 
-## Quick Start Guide
+## 🌟 Key Features
 
-### 1. Prerequisites
-- Python 3.10+ (tested on Python 3.13 and 3.14)
-- Pip
+### 🤖 1. AI Chat Companion
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+**Route:** `/chat`
 
-### 3. Environment Configuration (Optional)
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Default configuration values:
-- `SECRET_KEY`: `sahay-v-calming-secret-key-default`
-- `SQLALCHEMY_DATABASE_URI`: `sqlite:///sahay_v.db`
-- `SAHAY_WEBHOOK_URL`: `http://localhost:5678/webhook/sahay-v/assessment`
-
-### 4. Run the Application
-```bash
-python app.py
-```
-Open your browser and navigate to:
-```
-http://localhost:5000
-```
+- Conversational AI support through an n8n workflow.
+- Processes user messages through the AI Assessment Agent.
+- Estimates vulnerability/anxiety indicators on a **1–10 scale**.
+- Stores assessment information in the user's journey.
+- Provides fallback responses when the AI service is unavailable.
+- Designed to maintain a calm and supportive conversation experience.
 
 ---
 
-## Architecture & Documentation
+### 📊 2. My Journey Dashboard
 
-- [PROJECT_STRUCTURE.md](file:///d:/antigracvity%20files/SAHAY/PROJECT_STRUCTURE.md): Detailed map of files and components.
-- [API_DOCUMENTATION.md](file:///d:/antigracvity%20files/SAHAY/API_DOCUMENTATION.md): Complete REST endpoint specifications and request/response payloads.
-- [RECONSTRUCTION_REPORT.md](file:///d:/antigracvity%20files/SAHAY/RECONSTRUCTION_REPORT.md): Forensics report documenting file recovery from compiled bytecode and WhatsApp sources.
+**Route:** `/journey`
+
+The Journey dashboard helps users understand their emotional patterns over time.
+
+Features include:
+
+- Daily, weekly, and monthly mood summaries.
+- Interactive **Chart.js** time-series visualization.
+- Day / Week / Month filtering.
+- Chronological mood timeline.
+- Reflection notes.
+- Mood source tracking.
+- Anxiety tracking on a **1–10 scale**.
+- Animated emoji feedback for the anxiety slider.
+
+---
+
+### 🛡️ 3. Safety & Crisis Resources
+
+**Route:** `/safety`
+
+The safety section provides quick access to supportive resources and grounding exercises.
+
+Features include:
+
+- Mental-health helpline information.
+- Tele-MANAS resources.
+- KIRAN resources.
+- Vandrevala Foundation resources.
+- Interactive **4-4-4 Box Breathing** exercise.
+- Interactive **5-4-3-2-1 Sensory Grounding** exercise.
+- Step-by-step visual guidance during grounding exercises.
+
+---
+
+## 🧠 AI & n8n Integration
+
+SAHAY-V uses **n8n** as the AI workflow orchestration layer.
+
+The Flask backend communicates with a locally hosted n8n webhook:
+
+```text
+Flask Application
+       │
+       ▼
+n8n Webhook
+       │
+       ▼
+AI Assessment Workflow
+       │
+       ▼
+AI Processing
+       │
+       ▼
+Assessment + Response
+       │
+       ▼
+Flask Application
