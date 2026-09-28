@@ -1,0 +1,424 @@
+{
+  "name": "SAHAY-V 1 (workflow)",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26bab305-2ed1-46b5-a0ab-c99e1b12a20c",
+              "name": "case_id",
+              "value": "={{ $json.case_id || 'case_001' }}",
+              "type": "string"
+            },
+            {
+              "id": "026786c9-b005-4b17-879f-1cf68b432069",
+              "name": "interaction_id\t",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "48290a76-1e3a-4f28-8a07-c6fff3e75176",
+              "name": "message",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "6403cd5d-3a45-40cf-a96f-bc19c3417f9b",
+              "name": "input_type",
+              "value": "text",
+              "type": "string"
+            },
+            {
+              "id": "dac594fa-e157-4a1b-92bf-898df3a90325",
+              "name": "timestamp",
+              "value": "={{ $now }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        240,
+        816
+      ],
+      "id": "5a6c99e8-c93a-4565-af80-7e263250d1a8",
+      "name": "Normalize Input"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=CASE_ID:\n{{ $('Normalize Input').item.json.case_id }}\n\nUSER_MESSAGE:\n{{ $('Normalize Input').item.json.message }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are SAHAY-V, an AI-assisted victim vulnerability assessment agent.\n\nYour role is to coordinate four assessment tools and produce ONE structured assessment for a trained human responder.\n\nYou are NOT a doctor, therapist, police officer, or autonomous emergency decision-maker.\n\nYou do NOT diagnose medical or psychiatric conditions.\n\n==================================================\nUSER-FACING REPLY\n==================================================\n\nBefore writing user_reply, identify: what exactly did the user say, and what specific emotion or need is in it.\n\nThe reply must directly respond to THAT message — never reuse the same sentence structure or closing line from a previous reply in this session. If the reply could be pasted as a response to a different message and still sound right, rewrite it.\n\nIf the message is neutral, casual, or creative (e.g. asking for a poem, small talk, a factual question) and the tools show no elevated risk, respond naturally and helpfully in that mode. Do NOT force safety/risk language onto a message that isn't about risk.\n\nIf the user asks a direct question or makes a direct request (for a poem, a technique, information, a grounding exercise), the reply MUST contain the actual content requested — not just an offer to talk more, and not a generic status comment about their risk level.\n\nThe reply must be: empathetic, calm, concise, natural, and specific to the user's current message. Do NOT sound like a generic chatbot or therapist.\n\nDo NOT mention: SVI, risk level, confidence, component scores, internal tool names, or technical analysis.\n\nDo NOT diagnose any medical or psychiatric condition.\n\nKeep user_reply between 1 and 4 short sentences.\n\nAvoid generic phrases such as:\n\"Take care!\"\n\"Everything will be okay.\"\n\"It's completely normal.\"\n\"Keep taking care of yourself.\"\n\"It sounds like you're in a stable situation.\"\n\"It doesn't seem to be an urgent issue right now.\"\n\"It sounds like you're managing things well.\"\nUse them only if genuinely earned by the specific context — never as a default closer.\n\nNever exaggerate or minimize the situation. If risk_level is CRITICAL, the tone must clearly reflect that immediately — never softened to sound like LOW or MODERATE.\n\nBy risk level:\n\nFor LOW:\nAcknowledge the specific concern in the user's own terms. Mention protective information only if genuinely relevant. Give one concrete suggestion tied to their specific situation.\n\nFor MODERATE:\nAcknowledge the specific difficulty they described. Encourage appropriate support connected to what they said. Offer continued conversation or follow-up.\n\nFor HIGH:\nClearly name that what they're describing sounds serious — don't generalize it away. Encourage human responder review and support with language matching the seriousness.\n\nFor CRITICAL:\nPrioritize immediate safety above all else. Directly and warmly acknowledge their pain — do not deflect into generic language. Use short, clear, safety-focused sentences. Explicitly point toward immediate human or emergency support as the right next step.\n\nHARD OVERRIDE: If self_harm is true or immediate_physical_danger is true, user_reply must NEVER state or imply the person is safe, stable, or not in danger — this overrides all other tone guidance above.\n\n==================================================\nEXAMPLES OF CORRECT USER_REPLY\n(for calibration only — never copy these verbatim, always adapt to the actual current message)\n==================================================\n\nMessage: \"today i am very sad\"\nGood reply: \"I'm sorry today feels heavy. Sometimes just naming it, like you just did, is a real first step — want to tell me a bit more about what's making today hard?\"\nBad reply (avoid): \"It doesn't seem to be an urgent issue right now.\" — this ignores the sadness entirely and treats it as a risk-status report instead of a response to a person.\n\nMessage: \"i want to listen some poem to calm my self\"\nGood reply: \"Here's a short one for a quiet moment: 'Breathe in slow, let worry go, like leaves that drift on water's flow.' Would you like another, or want to talk about what's on your mind?\"\nBad reply (avoid): \"You're managing things well.\" — this does not engage with the actual request at all.\n\nMessage: \"how can I ground myself right now?\"\nGood reply: \"Try this: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste — it brings your mind back to the present. Want to try it together?\"\nBad reply (avoid): \"If you ever need someone to talk to, I'm here.\" — this doesn't answer the actual question asked.\n\nMessage: \"i want to harm my self\"\nGood reply: \"I'm really concerned to hear you're feeling this way, and I want you to be safe. Please reach out to a crisis helpline or someone you trust right now — you don't have to go through this alone.\"\nBad reply (avoid): \"It sounds like you're dealing with some general stress.\" — minimizing a self-harm disclosure is never acceptable.\n\nRULE: Every user_reply must contain at least one specific detail that ties it to what THIS message actually said. A reply that could be pasted under a different message unchanged is not acceptable — rewrite it.\n\n==================================================\nCURRENT USER MESSAGE\n==================================================\n\nAnalyze ONLY the CURRENT USER_MESSAGE supplied in this execution.\n\nDo NOT use:\n- previous conversations\n- previous test cases\n- previous assessments\n- previous tool results\n- remembered risk values\n\nThe current message is the only message being assessed. Even if a previous message in this session was CRITICAL, assess the current one fresh — do not assume it stays CRITICAL, and do not assume it drops to LOW. Let the tools decide.\n\n==================================================\nMANDATORY TOOL EXECUTION\n==================================================\n\nFor the current USER_MESSAGE, use these four tools:\n\n1. Case_Context_Analyzer\n2. Safety_Assessment_Tool\n3. SVI_Calculator1\n4. Intervention_Recommendation_Tool\n\nUse each tool ONE TIME.\n\nUse this exact input for every tool:\n\n{\n  \"query\": \"<complete current USER_MESSAGE>\"\n}\n\nDo NOT pass the case ID to the tools.\n\nDo NOT call a tool more than once.\n\nDo NOT retry a tool unless the tool itself reports an execution error.\n\nDo NOT perform your own risk calculation.\n\n==================================================\nAUTHORITATIVE RESULTS\n==================================================\n\nThe tools are authoritative.\n\nDo NOT reinterpret, recalculate, override, or invent values.\n\nCase_Context_Analyzer provides:\n- incident_type\n- incident_severity\n- perpetrator_relationship\n- repeated_incident\n- current_threat\n- social_support\n- access_to_help\n\nSafety_Assessment_Tool provides:\n- self_harm\n- harm_to_other\n- immediate_physical_danger\n- intimidation\n- coercion\n- severe_fear\n\nSVI_Calculator1 provides:\n- svi\n- risk_level\n- components\n\nIntervention_Recommendation_Tool provides:\n- priority\n- reason\n- recommendations\n\nUse these values exactly as returned.\n\n==================================================\nCONSISTENCY RULES\n==================================================\n\nIf SVI_Calculator1 returns:\n\"svi\": 80,\n\"risk_level\": \"CRITICAL\"\nthen the final assessment MUST contain:\n\"svi\": 80,\n\"risk_level\": \"CRITICAL\"\n\nIf Safety_Assessment_Tool returns:\n\"immediate_physical_danger\": true\nthen final assessment MUST contain:\n\"immediate_danger\": true\nIf it returns false, use false.\n\nIf Case_Context_Analyzer returns:\n\"repeated_incident\": false\nthen final assessment MUST contain:\n\"repeated_incident\": false\n\nDo not infer repeated incidents from:\n- \"for the past few weeks\"\n- \"for months\"\n- \"recently\"\nOnly use the Case_Context_Analyzer result.\n\nDo not infer domestic violence merely because words such as:\n- home\n- family\n- parents\n- husband\nappear in the message. Use the Case_Context_Analyzer result.\n\nDo not infer immediate danger merely from \"right now\" when the available assessment indicates that the person is safe.\n\n==================================================\nCASE ID\n==================================================\n\nThe CASE_ID provided in the current prompt is authoritative.\n\nUse that exact CASE_ID in the final output.\n\nNever generate a new case ID.\n\n==================================================\nMISSING DATA\n==================================================\n\nIf a tool returns \"unknown\", preserve \"unknown\".\n\nDo not guess. Do not convert unknown into true, false, low, moderate, high, or critical.\n\nDo not invent missing values. Do not invent confidence.\n\nIf confidence is unavailable, use the schema's allowed null/unknown representation.\n\n==================================================\nFINAL OUTPUT\n==================================================\n\nReturn ONLY ONE JSON OBJECT.\n\nThe object must contain:\n- user_reply\n- case_id\n- risk_level\n- svi\n- confidence\n- immediate_danger\n- self_harm\n- harm_to_other\n- incident_type\n- incident_severity\n- repeated_incident\n- social_support\n- evidence\n- recommendations\n- data_quality\n\nThe final assessment is decision support for a trained human responder.\n\nDo NOT diagnose.\n\nDo NOT add explanation outside the JSON.\n\nDo NOT use markdown.\n\nDo NOT write ```json.\n\nUse the connected Structured Output Parser.\n\n==================================================\nFINAL RESPONSE RULE\n==================================================\n\nThe final response must contain only the structured JSON object produced through the connected Structured Output Parser.",
+          "maxIterations": 6
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        560,
+        816
+      ],
+      "id": "3c61e375-b330-493a-b231-fd935d4b903b",
+      "name": "SAHAY-V Assessment Agent"
+    },
+    {
+      "parameters": {
+        "description": "=Use this tool to structure the core facts of the case once the user has shared enough about their situation. Extract: incident type, severity, relationship to the person involved, whether this is a repeated pattern, whether there is a current active threat, and how much social support the person has.",
+        "jsCode": "const rawQuery =\n  typeof query === \"string\"\n    ? query\n    : query?.query;\n\nconst text = String(rawQuery ?? \"\").toLowerCase().trim();\n\nlet incident_type = \"general_stress\";\nlet incident_severity = \"low\";\nlet perpetrator_relationship = \"unknown\";\nlet repeated_incident = false;\nlet current_threat = false;\nlet social_support = \"unknown\";\nlet access_to_help = \"unknown\";\n\n// =====================================================\n// 1. INCIDENT TYPE\n// =====================================================\n\nconst discriminationIndicators = [\n  \"discrimination\",\n  \"discriminated\",\n  \"caste discrimination\",\n  \"caste\",\n  \"untouchability\",\n  \"social boycott\",\n  \"excluded because of caste\"\n];\n\nconst violenceIndicators = [\n  \"violence\",\n  \"violent\",\n  \"assault\",\n  \"attacked me\",\n  \"attack me\",\n  \"beaten\",\n  \"beating me\",\n  \"physical abuse\",\n  \"physically abused\"\n];\n\nconst harassmentIndicators = [\n  \"harassment\",\n  \"harassing me\",\n  \"sexual harassment\",\n  \"stalking\",\n  \"stalking me\"\n];\n\nconst threatIndicators = [\n  \"threat\",\n  \"threatened\",\n  \"threatening\",\n  \"intimidation\",\n  \"intimidating\",\n  \"blackmail\",\n  \"blackmailing\",\n  \"warned me\",\n  \"said they would hurt me\",\n  \"said he would hurt me\",\n  \"said she would hurt me\"\n];\n\n// Domestic ONLY when there is a relationship + abuse/harm context\nconst relationshipMentioned =\n  text.includes(\"husband\") ||\n  text.includes(\"wife\") ||\n  text.includes(\"spouse\") ||\n  text.includes(\"partner\") ||\n  text.includes(\"boyfriend\") ||\n  text.includes(\"girlfriend\");\n\nconst domesticHarmContext =\n  text.includes(\"abuse\") ||\n  text.includes(\"abusing\") ||\n  text.includes(\"abused me\") ||\n  text.includes(\"beat me\") ||\n  text.includes(\"beats me\") ||\n  text.includes(\"hit me\") ||\n  text.includes(\"hits me\") ||\n  text.includes(\"hurt me\") ||\n  text.includes(\"threat\") ||\n  text.includes(\"threatened\") ||\n  text.includes(\"forcing me\") ||\n  text.includes(\"forced me\") ||\n  text.includes(\"controls me\") ||\n  text.includes(\"controlling me\");\n\n// Priority\nif (discriminationIndicators.some(p => text.includes(p))) {\n  incident_type = \"discrimination\";\n} else if (violenceIndicators.some(p => text.includes(p))) {\n  incident_type = \"violence\";\n} else if (harassmentIndicators.some(p => text.includes(p))) {\n  incident_type = \"harassment\";\n} else if (threatIndicators.some(p => text.includes(p))) {\n  incident_type = \"threat\";\n} else if (relationshipMentioned && domesticHarmContext) {\n  incident_type = \"domestic\";\n} else {\n  incident_type = \"general_stress\";\n}\n\n// =====================================================\n// 2. PERPETRATOR RELATIONSHIP\n// =====================================================\n\nif (relationshipMentioned) {\n  perpetrator_relationship = \"partner\";\n} else if (\n  text.includes(\"father\") ||\n  text.includes(\"mother\") ||\n  text.includes(\"brother\") ||\n  text.includes(\"sister\") ||\n  text.includes(\"family member\")\n) {\n  perpetrator_relationship = \"family\";\n} else if (\n  text.includes(\"friend\") &&\n  (\n    text.includes(\"threatened\") ||\n    text.includes(\"threatening\") ||\n    text.includes(\"hurt me\")\n  )\n) {\n  perpetrator_relationship = \"friend\";\n} else if (\n  text.includes(\"stranger\") ||\n  text.includes(\"unknown person\")\n) {\n  perpetrator_relationship = \"stranger\";\n}\n\n// =====================================================\n// 3. REPEATED INCIDENT\n// IMPORTANT:\n// Duration phrases such as \"for the past few weeks\"\n// must NOT automatically mean repeated incidents.\n// =====================================================\n\nconst repeatedIncidentIndicators = [\n  \"repeatedly threatened\",\n  \"threatened me repeatedly\",\n  \"threatened me several times\",\n  \"threatened me many times\",\n  \"threatened me multiple times\",\n  \"hurt me repeatedly\",\n  \"attacked me repeatedly\",\n  \"abused me repeatedly\",\n  \"harassed me repeatedly\",\n  \"stalked me repeatedly\",\n  \"again and again\",\n  \"over and over\",\n  \"several incidents\",\n  \"multiple incidents\",\n  \"many incidents\",\n  \"this has happened several times\",\n  \"this has happened many times\",\n  \"this keeps happening\",\n  \"keeps happening\"\n];\n\nrepeated_incident =\n  repeatedIncidentIndicators.some(p => text.includes(p));\n\n// =====================================================\n// 4. CURRENT THREAT\n// IMPORTANT:\n// \"right now\" or \"currently\" ALONE is NOT a threat.\n// We require a threat/danger signal too.\n// =====================================================\n\nconst activeDangerIndicators = [\n  \"immediate danger\",\n  \"in immediate danger\",\n  \"danger right now\",\n  \"in danger right now\",\n  \"they are here\",\n  \"he is here\",\n  \"she is here\",\n  \"they may hurt me\",\n  \"he may hurt me\",\n  \"she may hurt me\",\n  \"going to hurt me\",\n  \"about to hurt me\",\n  \"attacking me\",\n  \"trying to hurt me\",\n  \"trying to kill me\",\n  \"going to kill me\"\n];\n\nconst activeThreatIndicators = [\n  \"threatening me right now\",\n  \"threatening me currently\",\n  \"still threatening me\",\n  \"ongoing threat\",\n  \"ongoing danger\",\n  \"threat is ongoing\",\n  \"they are threatening me\",\n  \"he is threatening me\",\n  \"she is threatening me\"\n];\n\ncurrent_threat =\n  activeDangerIndicators.some(p => text.includes(p)) ||\n  activeThreatIndicators.some(p => text.includes(p));\n\n// Explicit safety statement overrides generic \"right now\"\nconst explicitlySafe =\n  text.includes(\"i am safe\") ||\n  text.includes(\"i'm safe\") ||\n  text.includes(\"safe right now\") ||\n  text.includes(\"currently safe\") ||\n  text.includes(\"i feel safe\") ||\n  text.includes(\"i feel safe right now\");\n\nif (explicitlySafe && !activeDangerIndicators.some(p => text.includes(p))) {\n  current_threat = false;\n}\n\n// =====================================================\n// 5. SOCIAL SUPPORT\n// =====================================================\n\nif (\n  text.includes(\"good support\") ||\n  text.includes(\"strong support\") ||\n  text.includes(\"supportive family\") ||\n  text.includes(\"supportive friend\") ||\n  text.includes(\"someone i can talk to\") ||\n  text.includes(\"people i can talk to\") ||\n  text.includes(\"friends i can talk to\") ||\n  text.includes(\"my family supports me\") ||\n  text.includes(\"have support from my family\")\n) {\n  social_support = \"good\";\n} else if (\n  text.includes(\"little support\") ||\n  text.includes(\"limited support\") ||\n  text.includes(\"not much support\") ||\n  text.includes(\"few people to help\")\n) {\n  social_support = \"moderate\";\n} else if (\n  text.includes(\"no support\") ||\n  text.includes(\"no one to help\") ||\n  text.includes(\"nobody to help\") ||\n  text.includes(\"no one nearby\") ||\n  text.includes(\"i am alone\") ||\n  text.includes(\"i'm alone\") ||\n  text.includes(\"no support around me\")\n) {\n  social_support = \"low\";\n}\n\n// =====================================================\n// 6. ACCESS TO HELP\n// =====================================================\n\nif (\n  text.includes(\"cannot get help\") ||\n  text.includes(\"can't get help\") ||\n  text.includes(\"no one can help\") ||\n  text.includes(\"cannot report\") ||\n  text.includes(\"can't report\") ||\n  text.includes(\"no access to help\")\n) {\n  access_to_help = \"low\";\n} else if (\n  text.includes(\"can get help\") ||\n  text.includes(\"can contact\") ||\n  text.includes(\"can report\") ||\n  text.includes(\"have someone to help\") ||\n  text.includes(\"have access to help\")\n) {\n  access_to_help = \"good\";\n} else if (\n  text.includes(\"difficult to get help\") ||\n  text.includes(\"hard to get help\")\n) {\n  access_to_help = \"moderate\";\n}\n\n// =====================================================\n// 7. INCIDENT SEVERITY\n// =====================================================\n\nif (\n  text.includes(\"immediate danger\") ||\n  text.includes(\"in immediate danger\") ||\n  text.includes(\"danger right now\") ||\n  text.includes(\"in danger right now\") ||\n  text.includes(\"about to hurt me\") ||\n  text.includes(\"attacking me right now\") ||\n  text.includes(\"trying to kill me right now\") ||\n  text.includes(\"going to kill me right now\")\n) {\n  incident_severity = \"critical\";\n} else if (\n  text.includes(\"threatened me\") ||\n  text.includes(\"threatening me\") ||\n  text.includes(\"threat\") ||\n  text.includes(\"assault\") ||\n  text.includes(\"violence\") ||\n  text.includes(\"beaten\") ||\n  text.includes(\"beating me\") ||\n  text.includes(\"very afraid\") ||\n  text.includes(\"very scared\") ||\n  text.includes(\"terrified\") ||\n  text.includes(\"afraid to go home\") ||\n  text.includes(\"scared to go home\")\n) {\n  incident_severity = \"high\";\n} else if (\n  text.includes(\"very stressed\") ||\n  text.includes(\"very anxious\") ||\n  text.includes(\"overwhelmed\") ||\n  text.includes(\"unable to cope\") ||\n  text.includes(\"difficult to cope\")\n) {\n  incident_severity = \"moderate\";\n} else if (\n  text.includes(\"stress\") ||\n  text.includes(\"stressed\") ||\n  text.includes(\"worried\") ||\n  text.includes(\"anxious\") ||\n  text.includes(\"uneasy\") ||\n  text.includes(\"concerned\")\n) {\n  incident_severity = \"low\";\n}\n\n// =====================================================\n// 8. SAFETY CONSISTENCY\n// =====================================================\n\nif (\n  current_threat &&\n  incident_severity === \"low\"\n) {\n  incident_severity = \"high\";\n}\n\nif (\n  incident_type === \"general_stress\" &&\n  explicitlySafe &&\n  !current_threat &&\n  !repeated_incident\n) {\n  incident_severity =\n    text.includes(\"very anxious\") ||\n    text.includes(\"very stressed\") ||\n    text.includes(\"overwhelmed\") ||\n    text.includes(\"difficult to cope\")\n      ? \"moderate\"\n      : \"low\";\n}\n\n// =====================================================\n// 9. RETURN\n// =====================================================\n\nreturn JSON.stringify({\n  incident_type,\n  incident_severity,\n  perpetrator_relationship,\n  repeated_incident,\n  current_threat,\n  social_support,\n  access_to_help\n});",
+        "specifyInputSchema": true,
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"query\": {\n      \"type\": \"string\",\n      \"description\": \"The user's complete current message, exactly as written.\"\n    }\n  },\n  \"required\": [\"query\"],\n  \"additionalProperties\": true\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        832,
+        1120
+      ],
+      "id": "db7444d9-3269-42f6-b2de-3227e1580918",
+      "name": "Case_Context_Analyzer"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -96,
+        656
+      ],
+      "id": "24a1f031-e8d5-4dbb-83b9-79a0be2f0c7a",
+      "name": "Victim Interaction Input",
+      "webhookId": "9c2db356-7f7b-486a-b98b-2e7bd3d64248"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool whenever the user's message contains any signal of danger — self-harm, threats to harm another person, immediate physical danger, coercion/control, or severe fear. Call this as soon as such a signal appears, even early in the conversation.",
+        "jsCode": "const rawQuery =\n  typeof query === \"string\"\n    ? query\n    : query?.query;\n\nconst text = String(rawQuery ?? \"\").toLowerCase().trim();\n\n// =====================================\n// SAFETY INDICATORS\n// =====================================\n\nlet self_harm = false;\nlet harm_to_other = false;\nlet immediate_physical_danger = false;\nlet intimidation = false;\nlet coercion = false;\nlet severe_fear = false;\n\n// =====================================\n// SELF-HARM\n// =====================================\n\nconst selfHarmPatterns = [\n  \"hurt myself\",\n  \"hurt my self\",\n  \"harm myself\",\n  \"harm my self\",\n  \"kill myself\",\n  \"kill my self\",\n  \"suicide\",\n  \"suicidal\",\n  \"end my life\",\n  \"end it all\",\n  \"take my own life\",\n  \"want to die\",\n  \"wants to die\",\n  \"wanna die\",\n  \"i want to die\",\n  \"do not want to live\",\n  \"don't want to live\",\n  \"don't want to be alive\",\n  \"do not want to be alive\",\n  \"not worth living\",\n  \"better off dead\",\n  \"can't go on\",\n  \"cannot go on\",\n  \"no reason to live\"\n];\n\nself_harm = selfHarmPatterns.some(p => text.includes(p));\n\n// =====================================\n// HARM TO OTHER\n// =====================================\n\nconst harmOtherPatterns = [\n  \"hurt him\",\n  \"hurt her\",\n  \"hurt them\",\n  \"harm him\",\n  \"harm her\",\n  \"harm them\",\n  \"kill him\",\n  \"kill her\",\n  \"kill them\",\n  \"want to hurt him\",\n  \"want to hurt her\",\n  \"want to hurt them\",\n  \"want to kill him\",\n  \"want to kill her\",\n  \"want to kill them\",\n  \"want to hurt someone\",\n  \"want to kill someone\"\n];\n\nharm_to_other = harmOtherPatterns.some(p => text.includes(p));\n\n// =====================================\n// IMMEDIATE PHYSICAL DANGER\n// =====================================\n\nconst immediateDangerPatterns = [\n  \"immediate danger\",\n  \"in immediate danger\",\n  \"danger right now\",\n  \"in danger right now\",\n  \"they may hurt me right now\",\n  \"he may hurt me right now\",\n  \"she may hurt me right now\",\n  \"they are about to hurt me\",\n  \"he is about to hurt me\",\n  \"she is about to hurt me\",\n  \"they are attacking me\",\n  \"he is attacking me\",\n  \"she is attacking me\",\n  \"attacking me right now\",\n  \"trying to hurt me right now\",\n  \"trying to kill me right now\",\n  \"going to hurt me right now\",\n  \"going to kill me right now\",\n  \"i am being attacked\",\n  \"i am being attacked right now\"\n];\n\nimmediate_physical_danger =\n  immediateDangerPatterns.some(p => text.includes(p));\n\n// =====================================\n// INTIMIDATION / THREAT\n// =====================================\n\nconst intimidationPatterns = [\n  \"threatened me\",\n  \"threatening me\",\n  \"threatens me\",\n  \"i was threatened\",\n  \"there is a threat\",\n  \"intimidating me\",\n  \"intimidated me\",\n  \"blackmailing me\",\n  \"blackmailed me\",\n  \"warned me\",\n  \"said they would hurt me\",\n  \"said he would hurt me\",\n  \"said she would hurt me\",\n  \"if i complain\",\n  \"if i report\",\n  \"if i tell anyone\"\n];\n\nintimidation =\n  intimidationPatterns.some(p => text.includes(p));\n\n// =====================================\n// COERCION / CONTROL\n// =====================================\n\nconst coercionPatterns = [\n  \"forced me\",\n  \"forcing me\",\n  \"pressuring me\",\n  \"pressure me\",\n  \"cannot refuse\",\n  \"can't refuse\",\n  \"not allowed\",\n  \"won't let me\",\n  \"will not let me\",\n  \"doesn't let me\",\n  \"do not let me\",\n  \"controlling me\",\n  \"controlled me\"\n];\n\ncoercion =\n  coercionPatterns.some(p => text.includes(p));\n\n// =====================================\n// SEVERE FEAR\n// =====================================\n\nconst severeFearPatterns = [\n  \"terrified\",\n  \"i'm terrified\",\n  \"i am terrified\",\n  \"very afraid\",\n  \"very scared\",\n  \"extremely afraid\",\n  \"extremely scared\",\n  \"afraid for my life\",\n  \"scared for my life\",\n  \"fear for my life\",\n  \"afraid to go home\",\n  \"scared to go home\",\n  \"i feel unsafe\",\n  \"i do not feel safe\",\n  \"i don't feel safe\"\n];\n\nsevere_fear =\n  severeFearPatterns.some(p => text.includes(p));\n\n// =====================================\n// SAFETY OVERRIDES / NEGATIONS\n// =====================================\n\nconst explicitlySafe =\n  text.includes(\"i am safe\") ||\n  text.includes(\"i'm safe\") ||\n  text.includes(\"currently safe\") ||\n  text.includes(\"safe right now\") ||\n  text.includes(\"i feel safe\");\n\nif (explicitlySafe && !(\n  text.includes(\"immediate danger\") ||\n  text.includes(\"in immediate danger\") ||\n  text.includes(\"being attacked\") ||\n  text.includes(\"trying to kill me\")\n)) {\n  immediate_physical_danger = false;\n}\n\n// NOTE: explicitlySafe should NEVER override self_harm —\n// a person can say \"I feel safe\" while still expressing\n// suicidal ideation. Self-harm detection is intentionally\n// left untouched by the safety override above.\n\n// =====================================\n// RETURN\n// =====================================\n\nreturn JSON.stringify({\n  self_harm,\n  harm_to_other,\n  immediate_physical_danger,\n  intimidation,\n  coercion,\n  severe_fear\n});",
+        "specifyInputSchema": true,
+        "jsonSchemaExample": "{\n  \"query\": \"The complete user message\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        1040,
+        1104
+      ],
+      "id": "d0004471-3f83-4e7a-b3a7-ede4d173e9fd",
+      "name": "Safety_Assessment_Tool"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"user_reply\": {\n      \"type\": \"string\"\n    },\n    \"case_id\": {\n      \"type\": \"string\"\n    },\n    \"risk_level\": {\n      \"type\": \"string\",\n      \"enum\": [\n        \"LOW\",\n        \"MODERATE\",\n        \"HIGH\",\n        \"CRITICAL\"\n      ]\n    },\n    \"svi\": {\n      \"type\": \"number\"\n    },\n    \"confidence\": {\n      \"type\": [\"number\", \"null\"]\n    },\n    \"immediate_danger\": {\n      \"type\": \"boolean\"\n    },\n    \"self_harm\": {\n      \"type\": \"boolean\"\n    },\n    \"harm_to_other\": {\n      \"type\": \"boolean\"\n    },\n    \"incident_type\": {\n      \"type\": \"string\"\n    },\n    \"incident_severity\": {\n      \"type\": \"string\"\n    },\n    \"repeated_incident\": {\n      \"type\": \"boolean\"\n    },\n    \"social_support\": {\n      \"type\": \"string\"\n    },\n    \"evidence\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"recommendations\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"data_quality\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"user_reply\",\n    \"case_id\",\n    \"risk_level\",\n    \"svi\",\n    \"confidence\",\n    \"immediate_danger\",\n    \"self_harm\",\n    \"harm_to_other\",\n    \"incident_type\",\n    \"incident_severity\",\n    \"repeated_incident\",\n    \"social_support\",\n    \"evidence\",\n    \"recommendations\",\n    \"data_quality\"\n  ],\n  \"additionalProperties\": false\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1232,
+        1120
+      ],
+      "id": "4887eb25-3b35-43a0-a96c-bc5a5af18f32",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to recommend the next appropriate support or human-review action based on the user's complete message.\n\nPass ONLY the complete user message as the \"query\" parameter.\n\nThis tool does not diagnose medical conditions.\nIt provides rule-based prototype recommendations for human responder review.\n\nPossible outputs include:\n- routine follow-up\n- human responder review\n- protection/safety assessment\n- counselling or psychosocial support\n- crisis support pathway\n- urgent safety assessment",
+        "jsCode": "const rawQuery =\n  typeof query === \"string\"\n    ? query\n    : query?.query;\n\nconst text = String(rawQuery ?? \"\").toLowerCase().trim();\n\nlet immediateDanger = false;\nlet selfHarm = false;\nlet harmToOther = false;\nlet severeFear = false;\nlet intimidation = false;\nlet repeatedIncident = false;\nlet lowSupport = false;\n\n// =====================================================\n// 1. IMMEDIATE DANGER\n// IMPORTANT:\n// \"right now\" ALONE is NOT immediate danger.\n// There must be an actual danger signal.\n// =====================================================\n\nconst immediateDangerPatterns = [\n  \"immediate danger\",\n  \"in immediate danger\",\n  \"danger right now\",\n  \"in danger right now\",\n  \"they may hurt me right now\",\n  \"he may hurt me right now\",\n  \"she may hurt me right now\",\n  \"they are about to hurt me\",\n  \"he is about to hurt me\",\n  \"she is about to hurt me\",\n  \"they are attacking me\",\n  \"he is attacking me\",\n  \"she is attacking me\",\n  \"attacking me right now\",\n  \"trying to hurt me right now\",\n  \"trying to kill me right now\",\n  \"going to hurt me right now\",\n  \"going to kill me right now\",\n  \"i am being attacked\",\n  \"i am being attacked right now\"\n];\n\nimmediateDanger =\n  immediateDangerPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 2. SELF-HARM\n// =====================================================\n\nconst selfHarmPatterns = [\n  \"hurt myself\",\n  \"harm myself\",\n  \"kill myself\",\n  \"suicide\",\n  \"suicidal\",\n  \"end my life\",\n  \"take my own life\",\n  \"want to die\",\n  \"wants to die\",\n  \"do not want to live\",\n  \"don't want to live\"\n];\n\nselfHarm =\n  selfHarmPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 3. HARM TO OTHER\n// =====================================================\n\nconst harmToOtherPatterns = [\n  \"hurt him\",\n  \"hurt her\",\n  \"hurt them\",\n  \"harm him\",\n  \"harm her\",\n  \"harm them\",\n  \"kill him\",\n  \"kill her\",\n  \"kill them\",\n  \"want to hurt him\",\n  \"want to hurt her\",\n  \"want to hurt them\",\n  \"want to kill him\",\n  \"want to kill her\",\n  \"want to kill them\",\n  \"want to hurt someone\",\n  \"want to kill someone\"\n];\n\nharmToOther =\n  harmToOtherPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 4. SEVERE FEAR\n// =====================================================\n\nconst severeFearPatterns = [\n  \"terrified\",\n  \"i'm terrified\",\n  \"i am terrified\",\n  \"very afraid\",\n  \"very scared\",\n  \"extremely afraid\",\n  \"extremely scared\",\n  \"afraid for my life\",\n  \"scared for my life\",\n  \"fear for my life\",\n  \"afraid to go home\",\n  \"scared to go home\",\n  \"i feel unsafe\",\n  \"i do not feel safe\",\n  \"i don't feel safe\"\n];\n\nsevereFear =\n  severeFearPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 5. INTIMIDATION / THREAT\n// =====================================================\n\nconst intimidationPatterns = [\n  \"threatened me\",\n  \"threatening me\",\n  \"threatens me\",\n  \"i was threatened\",\n  \"there is a threat\",\n  \"intimidating me\",\n  \"intimidated me\",\n  \"blackmailing me\",\n  \"blackmailed me\",\n  \"warned me\",\n  \"said they would hurt me\",\n  \"said he would hurt me\",\n  \"said she would hurt me\",\n  \"if i complain\",\n  \"if i report\",\n  \"if i tell anyone\"\n];\n\nintimidation =\n  intimidationPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 6. REPEATED INCIDENT\n// IMPORTANT:\n// Duration phrases such as:\n// \"for the past few weeks\"\n// \"for months\"\n// \"recently\"\n// DO NOT mean repeated victimization.\n// =====================================================\n\nconst repeatedIncidentPatterns = [\n  \"repeatedly\",\n  \"again and again\",\n  \"over and over\",\n  \"several times\",\n  \"many times\",\n  \"multiple times\",\n  \"this keeps happening\",\n  \"this has happened several times\",\n  \"this has happened many times\",\n  \"threatened me repeatedly\",\n  \"threatened me several times\",\n  \"threatened me many times\",\n  \"threatened me multiple times\",\n  \"hurt me repeatedly\",\n  \"attacked me repeatedly\",\n  \"abused me repeatedly\",\n  \"harassed me repeatedly\",\n  \"stalked me repeatedly\",\n  \"several incidents\",\n  \"multiple incidents\",\n  \"many incidents\"\n];\n\nrepeatedIncident =\n  repeatedIncidentPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 7. LOW SOCIAL SUPPORT\n// =====================================================\n\nconst lowSupportPatterns = [\n  \"no support\",\n  \"no one to help\",\n  \"nobody to help\",\n  \"no one nearby\",\n  \"i am alone\",\n  \"i'm alone\",\n  \"no support around me\",\n  \"i have no support\",\n  \"i don't have anyone\",\n  \"i do not have anyone\",\n  \"nobody is there for me\"\n];\n\nlowSupport =\n  lowSupportPatterns.some(p => text.includes(p));\n\n// =====================================================\n// 8. EXPLICIT SAFETY\n// =====================================================\n\nconst explicitlySafe =\n  text.includes(\"i am safe\") ||\n  text.includes(\"i'm safe\") ||\n  text.includes(\"safe right now\") ||\n  text.includes(\"currently safe\") ||\n  text.includes(\"i feel safe\") ||\n  text.includes(\"i feel safe right now\");\n\n// Do not interpret an explicit safety statement as an\n// immediate danger signal unless there is a separate,\n// stronger danger statement.\nif (\n  explicitlySafe &&\n  !immediateDanger &&\n  !text.includes(\"being attacked\")\n) {\n  immediateDanger = false;\n}\n\n// =====================================================\n// 9. RECOMMENDATIONS\n// =====================================================\n\nconst recommendations = [];\n\nlet priority = \"NORMAL\";\nlet reason = \"No immediate escalation signal identified.\";\n\n// -----------------------------------------------------\n// CRITICAL / URGENT SAFETY CONDITIONS\n// -----------------------------------------------------\n\nif (immediateDanger) {\n  priority = \"URGENT\";\n\n  reason = \"Immediate physical danger was indicated.\";\n\n  recommendations.push(\n    \"Human responder review\",\n    \"Urgent safety assessment\",\n    \"Appropriate emergency/protection pathway\"\n  );\n}\n\nif (selfHarm) {\n  priority = \"URGENT\";\n\n  reason = \"Self-harm concern was indicated.\";\n\n  recommendations.push(\n    \"Immediate human review\",\n    \"Crisis support pathway\"\n  );\n}\n\nif (harmToOther) {\n  priority = \"URGENT\";\n\n  reason = \"Potential harm-to-other concern was indicated.\";\n\n  recommendations.push(\n    \"Immediate human review\",\n    \"Safety assessment\"\n  );\n}\n\n// -----------------------------------------------------\n// HIGH VULNERABILITY\n// -----------------------------------------------------\n\nif (\n  !immediateDanger &&\n  !selfHarm &&\n  !harmToOther &&\n  (\n    intimidation ||\n    severeFear ||\n    repeatedIncident\n  )\n) {\n  priority = \"HIGH\";\n\n  reason = \"Significant vulnerability or threat indicators were identified.\";\n\n  recommendations.push(\n    \"Human responder review\"\n  );\n\n  if (intimidation) {\n    recommendations.push(\n      \"Protection/safety assessment\"\n    );\n  }\n\n  if (severeFear) {\n    recommendations.push(\n      \"Counselling or psychosocial support\"\n    );\n  }\n\n  if (repeatedIncident) {\n    recommendations.push(\n      \"Follow-up assessment\"\n    );\n  }\n}\n\n// -----------------------------------------------------\n// LOW SOCIAL SUPPORT\n// -----------------------------------------------------\n\nif (lowSupport) {\n  recommendations.push(\n    \"Connect with safe support resources\"\n  );\n}\n\n// -----------------------------------------------------\n// NORMAL / LOW\n// -----------------------------------------------------\n\nif (recommendations.length === 0) {\n  recommendations.push(\n    \"Continue assessment\",\n    \"Routine follow-up\"\n  );\n}\n\n// =====================================================\n// 10. REMOVE DUPLICATES\n// =====================================================\n\nconst uniqueRecommendations = [\n  ...new Set(recommendations)\n];\n\n// =====================================================\n// 11. RETURN\n// =====================================================\n\nreturn JSON.stringify({\n  priority,\n  reason,\n  recommendations: uniqueRecommendations,\n  indicators: {\n    immediate_danger: immediateDanger,\n    self_harm: selfHarm,\n    harm_to_other: harmToOther,\n    severe_fear: severeFear,\n    intimidation,\n    repeated_incident: repeatedIncident,\n    low_support: lowSupport\n  }\n});",
+        "specifyInputSchema": true,
+        "jsonSchemaExample": "{\n  \"query\": \"The complete user message\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        1616,
+        1120
+      ],
+      "id": "829afab4-1c73-4d9c-a033-f3744cfc8b60",
+      "name": "Intervention_Recommendation_Tool"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Agent ka structured result \"output\" ke andar nested aata hai — pehle usse unwrap karo\nconst raw = $input.first().json;\nconst data = raw.output || raw;\n\nconst evidence = data.evidence || [];\nconst recommendations = data.recommendations || [];\n\nconst formatted = `SAHAY-V ASSESSMENT\nSVI: ${data.svi}  |  Risk: ${data.risk_level}\nImmediate Danger: ${data.immediate_danger ? \"YES\" : \"NO\"}\nKey Evidence: ${evidence.join('; ')}\nRecommended: ${recommendations.join(' + ')}\nConfidence: ${Math.round((data.confidence || 0) * 100)}%  |  Data Quality: ${data.data_quality}\n\nAI-assisted decision support. Final assessment must be made by a trained human responder.`;\n\nreturn {\n  json: {\n    output: data.user_reply,\n    formatted_display: formatted,\n    ...data\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        912,
+        816
+      ],
+      "id": "1b441e37-2f2d-4410-81e0-9d7a6d7679c4",
+      "name": "Format Assessment Result"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool to calculate the prototype Stress Vulnerability Index from the user's complete message.\n\nPass ONLY the complete user message as the \"query\" input.\n\nThe tool returns:\n- svi: 0-100\n- risk_level: LOW, MODERATE, HIGH, or CRITICAL\n- component scores\n\nThis is a prototype engineering score, not a clinical diagnosis or clinically validated assessment.",
+        "jsCode": "// ============================================================\n// SAHAY-V — SVI CALCULATOR\n// Prototype engineering score only.\n// NOT a clinical diagnosis or clinically validated risk score.\n// ============================================================\n\n// n8n AI Tool may provide `query` as:\n// 1. a plain string\n// 2. an object containing { query: \"...\" }\n\nconst rawQuery =\n  typeof query === \"string\"\n    ? query\n    : query?.query ?? \"\";\n\nconst originalText = String(rawQuery ?? \"\").trim();\nconst text = originalText.toLowerCase();\n\n// ============================================================\n// HELPER FUNCTIONS\n// ============================================================\n\nfunction hasAny(phrases) {\n  return phrases.some((phrase) => text.includes(phrase));\n}\n\n// Explicit statements that the person is safe.\n// These prevent \"right now\" alone from being treated as danger.\nconst explicitlySafe = hasAny([\n  \"i am safe\",\n  \"i'm safe\",\n  \"currently safe\",\n  \"safe right now\",\n  \"i feel safe\",\n  \"not in danger\",\n  \"no immediate danger\",\n  \"there is no immediate danger\"\n]);\n\n// ============================================================\n// COMPONENT SCORES\n// 0 = none\n// 1 = low\n// 2 = moderate\n// 3 = high\n// 4 = critical\n// ============================================================\n\nlet distress = 0;\nlet threat = 0;\nlet immediateDanger = 0;\nlet socialVulnerability = 0;\nlet incidentSeverity = 0;\nlet selfHarm = 0;\nlet historicalRisk = 0;\nlet supportGap = 0;\n\n// ============================================================\n// 1. DISTRESS\n// ============================================================\n\nif (\n  hasAny([\n    \"terrified\",\n    \"extremely afraid\",\n    \"extremely scared\",\n    \"panic attack\",\n    \"panicking\",\n    \"cannot breathe\",\n    \"can't breathe\"\n  ])\n) {\n  distress = 4;\n} else if (\n  hasAny([\n    \"very afraid\",\n    \"very scared\",\n    \"extremely worried\",\n    \"overwhelmed\",\n    \"cannot cope\",\n    \"can't cope\",\n    \"unable to cope\"\n  ])\n) {\n  distress = 3;\n} else if (\n  hasAny([\n    \"stressed\",\n    \"stress\",\n    \"worried\",\n    \"anxious\",\n    \"anxiety\",\n    \"fear\",\n    \"afraid\",\n    \"scared\",\n    \"upset\"\n  ])\n) {\n  distress = 2;\n} else if (\n  hasAny([\n    \"concerned\",\n    \"uneasy\",\n    \"nervous\"\n  ])\n) {\n  distress = 1;\n}\n\n// ============================================================\n// 2. THREAT\n// ============================================================\n\nif (\n  hasAny([\n    \"threatened me\",\n    \"threatening me\",\n    \"threatened to kill me\",\n    \"threatened to hurt me\",\n    \"kill me\",\n    \"going to kill me\",\n    \"going to hurt me\",\n    \"about to hurt me\",\n    \"trying to hurt me\",\n    \"attacking me\",\n    \"attacked me\"\n  ])\n) {\n  threat = 4;\n} else if (\n  hasAny([\n    \"threat\",\n    \"threats\",\n    \"intimidating me\",\n    \"intimidation\",\n    \"being intimidated\",\n    \"coercion\",\n    \"being coerced\"\n  ])\n) {\n  threat = 3;\n}\n\n// ============================================================\n// 3. IMMEDIATE DANGER\n// ============================================================\n\n// IMPORTANT:\n// \"right now\" alone is NOT enough.\n// We require a danger indicator AND we make sure the person\n// did not explicitly state that they are safe.\n\nconst dangerSignal = hasAny([\n  \"immediate danger\",\n  \"danger right now\",\n  \"in danger right now\",\n  \"they are here\",\n  \"he is here\",\n  \"she is here\",\n  \"they're here\",\n  \"he's here\",\n  \"she's here\",\n  \"going to hurt me\",\n  \"about to hurt me\",\n  \"attacking me\",\n  \"attacking us\",\n  \"trying to hurt me\",\n  \"trying to kill me\"\n]);\n\nif (!explicitlySafe && dangerSignal) {\n  immediateDanger = 4;\n}\n\n// ============================================================\n// 4. SOCIAL VULNERABILITY\n// ============================================================\n\nif (\n  hasAny([\n    \"completely alone\",\n    \"totally alone\",\n    \"no support\",\n    \"no one nearby\",\n    \"nobody nearby\",\n    \"no one can help\",\n    \"nobody can help\",\n    \"i have no one\",\n    \"i don't have anyone\",\n    \"i do not have anyone\"\n  ])\n) {\n  socialVulnerability = 4;\n} else if (\n  hasAny([\n    \"alone\",\n    \"few people\",\n    \"little support\",\n    \"limited support\"\n  ])\n) {\n  socialVulnerability = 3;\n}\n\n// Positive support should not increase vulnerability.\nif (\n  hasAny([\n    \"good support\",\n    \"strong support\",\n    \"family support\",\n    \"friends support\",\n    \"friend i can talk to\",\n    \"people i can talk to\",\n    \"someone i can talk to\",\n    \"someone can help me\"\n  ])\n) {\n  socialVulnerability = 0;\n}\n\n// ============================================================\n// 5. INCIDENT SEVERITY\n// ============================================================\n\nif (\n  hasAny([\n    \"immediate danger\",\n    \"serious violence\",\n    \"severe violence\",\n    \"attacking me\",\n    \"attacked me\",\n    \"trying to kill me\",\n    \"going to kill me\",\n    \"kill me\"\n  ])\n) {\n  incidentSeverity = 4;\n} else if (\n  hasAny([\n    \"threatened me\",\n    \"threatening me\",\n    \"threat\",\n    \"threats\",\n    \"violence\",\n    \"violent\",\n    \"assault\",\n    \"assaulted\",\n    \"intimidation\"\n  ])\n) {\n  incidentSeverity = 3;\n} else if (\n  hasAny([\n    \"harassment\",\n    \"discrimination\",\n    \"domestic issue\",\n    \"stress\",\n    \"anxiety\",\n    \"anxious\",\n    \"worried\"\n  ])\n) {\n  incidentSeverity = 2;\n} else if (\n  hasAny([\n    \"concerned\",\n    \"uneasy\",\n    \"minor issue\"\n  ])\n) {\n  incidentSeverity = 1;\n}\n\n// ============================================================\n// 6. SELF-HARM\n// ============================================================\n\nif (\n  hasAny([\n    \"kill myself\",\n    \"hurt myself\",\n    \"harm myself\",\n    \"self harm\",\n    \"self-harm\",\n    \"suicide\",\n    \"suicidal\",\n    \"want to die\",\n    \"end my life\",\n    \"take my own life\"\n  ])\n) {\n  selfHarm = 4;\n}\n\n// ============================================================\n// 7. HISTORICAL / REPEATED RISK\n// ============================================================\n\nif (\n  hasAny([\n    \"many times\",\n    \"several times\",\n    \"repeatedly\",\n    \"again and again\",\n    \"over and over\",\n    \"multiple times\",\n    \"keeps happening\",\n    \"kept happening\"\n  ])\n) {\n  historicalRisk = 3;\n} else if (\n  hasAny([\n    \"again\",\n    \"before\",\n    \"in the past\",\n    \"previously\"\n  ])\n) {\n  historicalRisk = 2;\n}\n\n// NOTE:\n// \"for the past few weeks/months\" is NOT automatically treated\n// as repeated violence because duration alone does not prove\n// repeated incidents.\n\n// ============================================================\n// 8. SUPPORT GAP\n// ============================================================\n\nif (\n  hasAny([\n    \"no one can help\",\n    \"nobody can help\",\n    \"cannot get help\",\n    \"can't get help\",\n    \"unable to get help\",\n    \"no support\",\n    \"no one nearby\",\n    \"nobody nearby\",\n    \"cannot report\",\n    \"can't report\",\n    \"afraid to report\"\n  ])\n) {\n  supportGap = 4;\n} else if (\n  hasAny([\n    \"little support\",\n    \"limited support\",\n    \"difficult to get help\",\n    \"hard to get help\"\n  ])\n) {\n  supportGap = 3;\n}\n\n// Positive support lowers this component.\nif (\n  hasAny([\n    \"good support\",\n    \"strong support\",\n    \"family support\",\n    \"friend can help\",\n    \"friends can help\",\n    \"someone can help me\"\n  ])\n) {\n  supportGap = 0;\n}\n\n// ============================================================\n// BASE SVI CALCULATION\n//\n// Prototype weights:\n// distress             20%\n// threat               20%\n// immediate danger     15%\n// social vulnerability 10%\n// incident severity    10%\n// self-harm            15%\n// historical risk       5%\n// support gap           5%\n// ============================================================\n\nlet score =\n  (distress / 4) * 20 +\n  (threat / 4) * 20 +\n  (immediateDanger / 4) * 15 +\n  (socialVulnerability / 4) * 10 +\n  (incidentSeverity / 4) * 10 +\n  (selfHarm / 4) * 15 +\n  (historicalRisk / 4) * 5 +\n  (supportGap / 4) * 5;\n\n// ============================================================\n// ESCALATION FLOORS\n//\n// These are prototype engineering rules.\n// They make strong combinations visible to the responder.\n//\n// IMPORTANT:\n// These do NOT diagnose anything.\n// ============================================================\n\n// Clear immediate danger\nif (immediateDanger >= 4) {\n  score = Math.max(score, 80);\n}\n\n// Self-harm indication\nif (selfHarm >= 4) {\n  score = Math.max(score, 80);\n}\n\n// Repeated threat + severe fear + unsafe situation\nif (\n  threat >= 3 &&\n  distress >= 3 &&\n  historicalRisk >= 3 &&\n  !explicitlySafe\n) {\n  score = Math.max(score, 60);\n}\n\n// Threat + feeling unsafe\nif (\n  threat >= 3 &&\n  hasAny([\n    \"don't feel safe\",\n    \"do not feel safe\",\n    \"i don't feel safe\",\n    \"i do not feel safe\",\n    \"feel unsafe\",\n    \"afraid to go home\",\n    \"not safe going home\"\n  ])\n) {\n  score = Math.max(score, 55);\n}\n\n// ============================================================\n// FINAL SCORE\n// ============================================================\n\nconst svi = Math.min(100, Math.max(0, Math.round(score)));\n\n// ============================================================\n// RISK LEVEL\n// ============================================================\n\nlet risk_level = \"LOW\";\n\nif (svi >= 75) {\n  risk_level = \"CRITICAL\";\n} else if (svi >= 50) {\n  risk_level = \"HIGH\";\n} else if (svi >= 25) {\n  risk_level = \"MODERATE\";\n}\n\n// Safety overrides\nif (immediateDanger >= 4 || selfHarm >= 4) {\n  risk_level = \"CRITICAL\";\n}\n\n// ============================================================\n// RETURN\n// ============================================================\n\nreturn JSON.stringify({\n  svi,\n  risk_level,\n\n  components: {\n    distress,\n    threat,\n    immediate_danger: immediateDanger,\n    social_vulnerability: socialVulnerability,\n    incident_severity: incidentSeverity,\n    self_harm: selfHarm,\n    historical_risk: historicalRisk,\n    support_gap: supportGap\n  }\n});",
+        "specifyInputSchema": true,
+        "jsonSchemaExample": "{\n  \"query\": \"The complete user message\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        1952,
+        1136
+      ],
+      "id": "530ed892-6ae6-486a-8bca-70a4e95be732",
+      "name": "SVI_Calculator1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        1280
+      ],
+      "id": "7bc5d2f4-b1e9-4bef-99b7-f37d48f68028",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "sfwxRowQKcMLlpE6",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "qwen3:8b",
+        "options": {
+          "think": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        400,
+        1168
+      ],
+      "id": "35bc8a47-4b84-468a-9359-bfeb5ee66d91",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "eJaPFfklZFd6veoV",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// SAHAY-V — TEMPORAL VULNERABILITY TRACKER\n// Prototype only: tracks SVI changes for the current case.\n// Does NOT diagnose or make autonomous decisions.\n// ============================================================\n\n// Get current assessment\nconst current = $input.first().json;\n\n// ------------------------------------------------------------\n// CURRENT VALUES\n// ------------------------------------------------------------\n\nconst caseId = String(current.case_id ?? \"\");\nconst currentSvi = Number(current.svi ?? 0);\nconst currentRisk = String(current.risk_level ?? \"UNKNOWN\");\n\n// ------------------------------------------------------------\n// TEMPORAL MEMORY\n// ------------------------------------------------------------\n// Prototype storage using workflow static data.\n// This allows repeated interactions for the same case\n// to build a simple vulnerability trajectory.\n// ------------------------------------------------------------\n\nconst staticData = $getWorkflowStaticData(\"global\");\n\nif (!staticData.temporalCases) {\n  staticData.temporalCases = {};\n}\n\nif (!staticData.temporalCases[caseId]) {\n  staticData.temporalCases[caseId] = {\n    assessments: []\n  };\n}\n\nconst caseHistory = staticData.temporalCases[caseId];\n\n// ------------------------------------------------------------\n// PREVIOUS ASSESSMENT\n// ------------------------------------------------------------\n\nconst previousAssessment =\n  caseHistory.assessments.length > 0\n    ? caseHistory.assessments[caseHistory.assessments.length - 1]\n    : null;\n\nconst previousSvi = previousAssessment\n  ? Number(previousAssessment.svi)\n  : null;\n\nconst previousRisk = previousAssessment\n  ? String(previousAssessment.risk_level)\n  : null;\n\n// ------------------------------------------------------------\n// CALCULATE CHANGE\n// ------------------------------------------------------------\n\nlet change = 0;\n\nif (previousSvi !== null) {\n  change = currentSvi - previousSvi;\n}\n\n// ------------------------------------------------------------\n// DETERMINE TRAJECTORY\n// ------------------------------------------------------------\n\nlet trajectory = \"STABLE\";\n\nif (previousSvi === null) {\n  trajectory = \"INITIAL\";\n} else if (change >= 15) {\n  trajectory = \"ESCALATING\";\n} else if (change <= -15) {\n  trajectory = \"IMPROVING\";\n} else {\n  trajectory = \"STABLE\";\n}\n\n// ------------------------------------------------------------\n// RISK TRANSITION\n// ------------------------------------------------------------\n\nlet riskTransition = \"UNCHANGED\";\n\nif (previousRisk !== null && previousRisk !== currentRisk) {\n  riskTransition = `${previousRisk} → ${currentRisk}`;\n}\n\n// ------------------------------------------------------------\n// STORE CURRENT ASSESSMENT\n// ------------------------------------------------------------\n\ncaseHistory.assessments.push({\n  svi: currentSvi,\n  risk_level: currentRisk,\n  timestamp: new Date().toISOString()\n});\n\n// Keep only the latest 20 assessments for prototype use\nif (caseHistory.assessments.length > 20) {\n  caseHistory.assessments =\n    caseHistory.assessments.slice(-20);\n}\n\n// ------------------------------------------------------------\n// BUILD TEMPORAL HISTORY\n// ------------------------------------------------------------\n\nconst sviHistory = caseHistory.assessments.map((item, index) => ({\n  interaction_number: index + 1,\n  svi: item.svi,\n  risk_level: item.risk_level,\n  timestamp: item.timestamp\n}));\n\n// ------------------------------------------------------------\n// FINAL OUTPUT\n// ------------------------------------------------------------\n\nreturn {\n  json: {\n    ...current,\n\n    temporal_tracking: {\n      previous_svi: previousSvi,\n      current_svi: currentSvi,\n      change,\n      trajectory,\n      previous_risk_level: previousRisk,\n      current_risk_level: currentRisk,\n      risk_transition: riskTransition,\n      assessment_count: caseHistory.assessments.length,\n      svi_history: sviHistory\n    }\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1136,
+        816
+      ],
+      "id": "64153fde-4a90-4261-9ff5-56140e63f2da",
+      "name": "Temporal Vulnerability Tracker"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "sahay-v/assessment",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -96,
+        928
+      ],
+      "id": "ea38ce69-1bc9-446e-a38b-cbf9a60fa7ec",
+      "name": "Webhook",
+      "webhookId": "8713740e-e61f-492b-8d2e-4864d6ce5a81"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-20b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        400,
+        1024
+      ],
+      "id": "13721812-fc97-4d24-9bd0-3bc1a086a3bc",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "sfwxRowQKcMLlpE6",
+          "name": "Groq account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Normalize Input": {
+      "main": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Case_Context_Analyzer": {
+      "ai_tool": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Victim Interaction Input": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Safety_Assessment_Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SAHAY-V Assessment Agent": {
+      "main": [
+        [
+          {
+            "node": "Format Assessment Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intervention_Recommendation_Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SVI_Calculator1": {
+      "ai_tool": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Format Assessment Result": {
+      "main": [
+        [
+          {
+            "node": "Temporal Vulnerability Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "SAHAY-V Assessment Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "80b2eb60-bb0b-4b5f-9047-798ffebc7c99",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2cee3f85773d7f7503c7c5de252a030975600cbd249af85f15ae9bf09db21b23"
+  },
+  "nodeGroups": [],
+  "id": "hhuO55F4HCjwNxJF",
+  "tags": []
+}
